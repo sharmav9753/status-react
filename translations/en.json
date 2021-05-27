@@ -1570,5 +1570,6 @@
     "no-thanks": "No thanks",
     "help-improve-status": "Help improve Status",
     "thank-you": "Thank you",
-    "count-metrics-collected": "{{count}} metrics collected"
+    "count-metrics-collected": "{{count}} metrics collected",
+    "empty-activity-center": "Your chat notifications\nwill appear here"
 }
