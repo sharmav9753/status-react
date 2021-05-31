@@ -439,8 +439,9 @@
 (re-frame/reg-sub
  :disconnected?
  :<- [:peers-count]
- (fn [peers-count]
-   (zero? peers-count)))
+ :<- [:waku/v2-flag]
+ (fn [peers-count wakuv2-flag]
+   (if wakuv2-flag false (zero? peers-count))))
 
 (re-frame/reg-sub
  :offline?
@@ -627,6 +628,12 @@
  :<- [:multiaccount]
  (fn [multiaccount]
    (boolean (get multiaccount :waku-bloom-filter-mode))))
+
+(re-frame/reg-sub
+ :waku/v2-flag
+ :<- [:multiaccount]
+ (fn [multiaccount]
+   (boolean (get-in multiaccount [:wakuv2-config :Enabled]))))
 
 (re-frame/reg-sub
  :dapps-address
