@@ -1571,5 +1571,6 @@
     "help-improve-status": "Help improve Status",
     "thank-you": "Thank you",
     "count-metrics-collected": "{{count}} metrics collected",
-    "terms-of-service": "Terms of service"
+    "terms-of-service": "Terms of service",
+    "accept-status-tos-prefix": "I accept Status"
 }
