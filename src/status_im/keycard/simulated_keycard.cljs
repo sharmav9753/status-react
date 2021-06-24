@@ -15,6 +15,7 @@
 (def kk1-password "000000")
 (def default-pin "111111")
 (def default-puk "000000000000")
+(def account-password (ethereum/sha3 "no password"))
 
 (def initial-state
   {:card-connected?  false
@@ -190,7 +191,7 @@
         whisper     (get derived constants/path-whisper-keyword)
         wallet      (get derived constants/path-default-wallet-keyword)
         wallet-root (get derived constants/path-wallet-root-keyword)
-        password    (ethereum/sha3 pin)
+        password    account-password
         response    {:key-uid                key-uid
                      :encryption-public-key  password
                      :address                address
@@ -256,7 +257,7 @@
         constants/path-eip1581
         constants/path-whisper
         constants/path-default-wallet]
-       (ethereum/sha3 pin)
+       account-password
        #(on-success response)))))
 
 (defn unblock-pin
@@ -315,7 +316,7 @@
     #(let [{:keys [key-uid wallet-root-address]}
            (get @re-frame.db/app-db :multiaccount)
            accounts            (get @re-frame.db/app-db :multiaccount/accounts)
-           hashed-password     (ethereum/sha3 pin)
+           hashed-password     account-password
            path-num            (inc (get-in @re-frame.db/app-db [:multiaccount :latest-derived-path]))
            path                (str "m/" path-num)]
        (status/multiaccount-load-account
@@ -359,12 +360,12 @@
           constants/path-eip1581
           constants/path-whisper
           constants/path-default-wallet]
-         (ethereum/sha3 pin)
+         account-password
          #(on-success keys)))
       #(on-success
         {:key-uid               (get-in @state [:application-info :key-uid])
          :instance-uid          (get-in @state [:application-info :instance-uid])
-         :encryption-public-key (ethereum/sha3 pin)}))))
+         :encryption-public-key account-password}))))
 
 (def import-keys get-keys)
 
@@ -381,7 +382,7 @@
              (-> (:multiaccount/accounts @re-frame.db/app-db)
                  first
                  :address))
-           password (ethereum/sha3 pin)]
+           password account-password]
        (if-not typed?
          (let [params (types/clj->json
                        {:account  address
@@ -424,7 +425,7 @@
 
 (defn send-transaction-with-signature
   [{:keys [transaction on-completed]}]
-  (status/send-transaction transaction (ethereum/sha3 (:pin @state)) on-completed))
+  (status/send-transaction transaction account-password on-completed))
 
 (defrecord SimulatedKeycard []
   keycard/Keycard
